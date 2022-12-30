@@ -34,7 +34,7 @@ no_parent_field_embed=''
 no_parent_field_type_embed=''
 no_parent_state=''
 
-batch_size=20
+batch_size=8
 grad_accumulate=5
 lr=1e-4
 layerwise_decay=0.8

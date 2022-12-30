@@ -25,17 +25,17 @@ This is the project containing source code for the paper [*LGESQL: Line Graph En
 The following commands are provided in `setup.sh`.
 
 1. Firstly, create conda environment `text2sql`:
-  - In our experiments, we use **torch==1.6.0** and **dgl==0.5.3** with CUDA version 10.1
+  - In our experiments, we use **torch==1.13.0** and **dgl==0.5.3** with CUDA version 11.6
   - We use one GeForce RTX 2080 Ti for GLOVE and base-series pre-trained language model~(PLM) experiments, one Tesla V100-PCIE-32GB for large-series PLM experiments
     
-        conda create -n text2sql python=3.6
+        conda create -n text2sql python=3.8
         source activate text2sql
         pip install torch==1.6.0+cu101 -f https://download.pytorch.org/whl/torch_stable.html
         pip install -r requirements.txt
 
 2. Next, download dependencies:
 
-        python -c "import stanza; stanza.download('en')"
+        python -c "import stanza; stanza.download('en'); stanza.download('zh', processors='tokenize,pos')"
         python -c "from embeddings import GloveEmbedding; emb = GloveEmbedding('common_crawl_48', d_emb=300)"
         python -c "import nltk; nltk.download('stopwords')"
 
@@ -46,16 +46,14 @@ The following commands are provided in `setup.sh`.
         git clone https://huggingface.co/bert-large-uncased-whole-word-masking
         git clone https://huggingface.co/google/electra-large-discriminator
         mkdir -p glove.42b.300d && cd glove.42b.300d
-        wget -c http://nlp.stanford.edu/data/glove.42B.300d.zip && unzip glove.42B.300d.zip
+        wget -c hcd ttp://nlp.stanford.edu/data/glove.42B.300d.zip && unzip glove.42B.300d.zip
         awk -v FS=' ' '{print $1}' glove.42B.300d.txt > vocab_glove.txt
 
 ## Download and preprocess dataset
 
 1. Download, unzip and rename the [spider.zip](https://drive.google.com/uc?export=download&id=1_AckYkinAnhqmRQtGsQgUKAnTHxxX5J0) into the directory `data`.
 
-2. Merge the `data/train_spider.json` and `data/train_others.json` into one single dataset `data/train.json`.
-
-3. Preprocess the train and dev dataset, including input normalization, schema linking, graph construction and output actions generation. (Our preprocessed dataset can be downloaded [here](https://drive.google.com/file/d/1L8sWlp7J9LWjw9MP2bHGsf0wC4xLAyxO/view?usp=sharing))
+2. Preprocess the train and dev dataset, including input normalization, schema linking, graph construction and output actions generation. (Our preprocessed dataset can be downloaded [here](https://drive.google.com/file/d/1L8sWlp7J9LWjw9MP2bHGsf0wC4xLAyxO/view?usp=sharing))
 
         ./run/run_preprocessing.sh
 

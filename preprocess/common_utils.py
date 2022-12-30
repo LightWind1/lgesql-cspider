@@ -41,7 +41,8 @@ class Preprocessor():
         super(Preprocessor, self).__init__()
         self.db_dir = db_dir
         self.db_content = db_content
-        self.nlp = stanza.Pipeline('en', processors='tokenize,pos,lemma')#, use_gpu=False)
+        self.nlp_en = stanza.Pipeline('en', processors='tokenize,pos,lemma', download_method=None)#, use_gpu=False)
+        self.nlp_zh = stanza.Pipeline('zh', processors='tokenize,pos', download_method=None)
         self.stopwords = stopwords.words("english")
 
     def pipeline(self, entry: dict, db: dict, verbose: bool = False):
@@ -55,14 +56,14 @@ class Preprocessor():
         """ Tokenize, lemmatize, lowercase table and column names for each database """
         table_toks, table_names = [], []
         for tab in db['table_names']:
-            doc = self.nlp(tab)
+            doc = self.nlp_en(tab)
             tab = [w.lemma.lower() for s in doc.sentences for w in s.words]
             table_toks.append(tab)
             table_names.append(" ".join(tab))
         db['processed_table_toks'], db['processed_table_names'] = table_toks, table_names
         column_toks, column_names = [], []
         for _, c in db['column_names']:
-            doc = self.nlp(c)
+            doc = self.nlp_en(c)
             c = [w.lemma.lower() for s in doc.sentences for w in s.words]
             column_toks.append(c)
             column_names.append(" ".join(c))
@@ -128,9 +129,19 @@ class Preprocessor():
         """ Tokenize, lemmatize, lowercase question"""
         # stanza tokenize, lemmatize and POS tag
         question = ' '.join(quote_normalization(entry['question_toks']))
-        doc = self.nlp(question)
+        doc = self.nlp_zh(question)
         raw_toks = [w.text.lower() for s in doc.sentences for w in s.words]
-        toks = [w.lemma.lower() for s in doc.sentences for w in s.words]
+
+        # toks = [w.lemma.lower() for s in doc.sentences for w in s.words]
+        # original lemma.lower() may get None return
+        toks = []
+        for s in doc.sentences:
+            for w in s.words:
+                if w.lemma is not None:
+                    toks.append(w.lemma.lower())
+                else:
+                    toks.append("")
+
         pos_tags = [w.xpos for s in doc.sentences for w in s.words]
 
         entry['raw_question_toks'] = raw_toks

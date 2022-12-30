@@ -58,7 +58,8 @@ class GraphInputLayerPLM(nn.Module):
         pass
 
     def forward(self, batch):
-        outputs = self.plm_model(**batch.inputs)[0] # final layer hidden states
+        plm_outputs = self.plm_model(**batch.inputs)
+        outputs = plm_outputs.last_hidden_state # final layer hidden states
         question, table, column = self.subword_aggregation(outputs, batch)
         input_dict = {
             "question": self.dropout_layer(question),

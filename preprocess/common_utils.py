@@ -1,5 +1,5 @@
 #coding=utf8
-import os, sqlite3
+import os, sqlite3,sys
 import numpy as np
 import stanza, torch
 from nltk.corpus import stopwords
@@ -12,6 +12,13 @@ def is_number(s):
         return True
     except ValueError:
         return False
+
+def load_stopwords():
+    list = []
+    with open(os.path.abspath('./hit_stopwords.txt')) as f:
+        for line in f:
+            list.append(line.strip('\n').split(','))
+    return list
 
 def quote_normalization(question):
     """ Normalize all usage of quotation marks into a separate \" """
@@ -43,7 +50,7 @@ class Preprocessor():
         self.db_content = db_content
         self.nlp_en = stanza.Pipeline('en', processors='tokenize,pos,lemma', download_method=None)#, use_gpu=False)
         self.nlp_zh = stanza.Pipeline('zh', processors='tokenize,pos', download_method=None)
-        self.stopwords = stopwords.words("english")
+        self.stopwords = load_stopwords()
 
     def pipeline(self, entry: dict, db: dict, verbose: bool = False):
         """ db should be preprocessed """

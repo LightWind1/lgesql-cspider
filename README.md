@@ -1,3 +1,11 @@
+LGESQL validation with Cspider datasets
+Upgrade Pytorch Version to 1.13
+Cspider need a pre-trained to encode both Chinese and English , so we used multilingual-BERT instead.
+
+## Results
+
+Dev dataset exact match/checker/beam acc is 0.5551/0.5609/0.6470
+
 # LGESQL
 
 This is the project containing source code for the paper [*LGESQL: Line Graph Enhanced Text-to-SQL Model with Mixed Local and Non-Local Relations*](https://arxiv.org/abs/2004.12299) in **ACL 2021 main conference**. If you find it useful, please cite our work.
@@ -30,7 +38,7 @@ The following commands are provided in `setup.sh`.
     
         conda create -n text2sql python=3.8
         source activate text2sql
-        pip install torch==1.6.0+cu101 -f https://download.pytorch.org/whl/torch_stable.html
+        pip install torch==1.13.0 torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
         pip install -r requirements.txt
 
 2. Next, download dependencies:
@@ -43,15 +51,11 @@ The following commands are provided in `setup.sh`.
 
         mkdir -p pretrained_models && cd pretrained_models
         git lfs install
-        git clone https://huggingface.co/bert-large-uncased-whole-word-masking
-        git clone https://huggingface.co/google/electra-large-discriminator
-        mkdir -p glove.42b.300d && cd glove.42b.300d
-        wget -c hcd ttp://nlp.stanford.edu/data/glove.42B.300d.zip && unzip glove.42B.300d.zip
-        awk -v FS=' ' '{print $1}' glove.42B.300d.txt > vocab_glove.txt
+        git lfs clone https://huggingface.co/bert-base-multilingual-uncased
 
 ## Download and preprocess dataset
 
-1. Download, unzip and rename the [spider.zip](https://drive.google.com/uc?export=download&id=1_AckYkinAnhqmRQtGsQgUKAnTHxxX5J0) into the directory `data`.
+1. Download, unzip and rename the [Cspider.zip] into the directory `data`.
 
 2. Preprocess the train and dev dataset, including input normalization, schema linking, graph construction and output actions generation. (Our preprocessed dataset can be downloaded [here](https://drive.google.com/file/d/1L8sWlp7J9LWjw9MP2bHGsf0wC4xLAyxO/view?usp=sharing))
 
@@ -63,28 +67,13 @@ Training LGESQL models with GLOVE, BERT and ELECTRA respectively:
   - msde: mixed static and dynamic embeddings
   - mmc: multi-head multi-view concatenation
 
-
-        ./run/run_lgesql_glove.sh [mmc|msde]
-        ./run/run_lgesql_plm.sh [mmc|msde] bert-large-uncased-whole-word-masking
-        ./run/run_lgesql_plm.sh [mmc|msde] electra-large-discriminator
+        ./run/run_lgesql_plm.sh [mmc|msde] bert-base-multilingual-uncased
 
 ## Evaluation and submission
 
 1. Create the directory `saved_models`, save the trained model and its configuration (at least containing `model.bin` and `params.json`) into a new directory under `saved_models`, e.g. `saved_models/electra-msde-75.1/`.
 
 2. For evaluation, see `run/run_evaluation.sh` and `run/run_submission.sh` (eval from scratch) for reference.
-
-3. Model instances and submission scripts are available in [codalab:plm](https://worksheets.codalab.org/worksheets/0x53017948b7dc4cbd95d3191a35f6b6b2) and [google drive](https://drive.google.com/file/d/1ALf5ycxMViHrT5WGuFO3g9eT7R2S1rgy/view?usp=sharing): including submitted BERT and ELECTRA models. Codes and model for GLOVE are deprecated.
-
-
-## Results
-Dev and test **EXACT MATCH ACC** in the official [leaderboard](https://yale-lily.github.io//spider), also provided in the `results` directory:
-
-| model | dev acc | test acc |
-| :---: | :---: | :---: |
-| LGESQL + GLOVE | 67.6 | 62.8 |
-| LGESQL + BERT | 74.1 | 68.3 |
-| LGESQL + ELECTRA | 75.1 | 72.0 |
 
 ## Acknowledgements
 

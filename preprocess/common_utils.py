@@ -1,8 +1,7 @@
 #coding=utf8
-import os, sqlite3,sys
+import os, sqlite3
 import numpy as np
 import stanza, torch
-from nltk.corpus import stopwords
 from itertools import product, combinations
 from utils.constants import MAX_RELATIVE_DIST
 

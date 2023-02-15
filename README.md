@@ -1,4 +1,4 @@
-LGESQL validation with Cspider datasets, upgrade Pytorch Version to 1.13.Cspider need a pre-trained to encode both Chinese and English, so we used multilingual-BERT instead.
+LGESQL validation with Cspider datasets, upgrade Pytorch Version to 1.13.Cspider need a pre-trained LM to encode both Chinese and English, so we used multilingual-BERT instead.
 
 ## Results
 

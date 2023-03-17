@@ -31,7 +31,7 @@ This is the project containing source code for the paper [*LGESQL: Line Graph En
 The following commands are provided in `setup.sh`.
 
 1. Firstly, create conda environment `text2sql`:
-  - In our experiments, we use **torch==1.13.0** and **dgl==0.5.3** with CUDA version 11.6
+  - In our experiments, we use **torch==1.13.0** and **dgl==1.0.0** with CUDA version 11.6
   - We use one GeForce RTX 2080 Ti for GLOVE and base-series pre-trained language model~(PLM) experiments, one Tesla V100-PCIE-32GB for large-series PLM experiments
     
         conda create -n text2sql python=3.8

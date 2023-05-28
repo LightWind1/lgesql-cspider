@@ -28,7 +28,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from process_sql import tokenize, get_schema, get_tables_with_alias, Schema, get_sql
 
 # Flag to disable value evaluation
-DISABLE_VALUE = True
+DISABLE_VALUE = False
 # Flag to disable distinct in select evaluation
 DISABLE_DISTINCT = True
 
